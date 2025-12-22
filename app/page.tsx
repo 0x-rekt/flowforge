@@ -1,9 +1,9 @@
-import LogoutButton from "@/components/logout-button";
+import Navbar from "@/components/Navbar";
 
 const Home = () => {
   return (
     <div className="h-screen flex items-center justify-center">
-      <LogoutButton />
+      <Navbar />
     </div>
   );
 };
