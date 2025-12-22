@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import LogoutButton from "@/components/logout-button";
 
 const Home = () => {
   return (
     <div className="h-screen flex items-center justify-center">
-      <Button>Click Me</Button>
+      <LogoutButton />
     </div>
   );
 };
