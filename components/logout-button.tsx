@@ -3,7 +3,7 @@
 import { useState } from "react";
 import CustomBtn from "@/components/custom-btn";
 import { signOut } from "@/lib/auth-client";
-import { Loader2 } from "lucide-react"; // For a subtle spinner
+import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 const LogoutButton = () => {

@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -9,15 +8,17 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id                String             @id
+  name              String
+  email             String
+  emailVerified     Boolean            @default(false)
+  image             String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  sessions          Session[]
+  accounts          Account[]
+  whiteBoards       WhiteBoard[]
+  whiteBoardMembers WhiteBoardMember[]
 
   @@unique([email])
   @@map("user")
@@ -69,4 +70,25 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model WhiteBoard {
+  id        String             @id @default(cuid())
+  title     String
+  ownerId   String
+  owner     User               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  members   WhiteBoardMember[]
+  createdAt DateTime           @default(now())
+}
+
+model WhiteBoardMember {
+  id           String     @id @default(cuid())
+  whiteBoardId String
+  userId       String
+  role         String
+  whiteBoard   WhiteBoard @relation(fields: [whiteBoardId], references: [id], onDelete: Cascade)
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([whiteBoardId, userId])
+  @@index([userId])
 }

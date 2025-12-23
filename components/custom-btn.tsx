@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface CustomBtnProps {
-  text: string;
+  text?: string;
   className?: string;
   onClick?: () => void;
   children?: React.ReactNode;
