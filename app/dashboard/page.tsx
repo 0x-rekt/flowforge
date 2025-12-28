@@ -18,8 +18,6 @@ const DashboardPage = async () => {
     orderBy: { createdAt: "desc" },
   });
 
-  console.log(data);
-
   return (
     <div className="min-h-screen bg-[#0a0a0a] pt-28 pb-12">
       <div className="max-w-7xl mx-auto px-6">

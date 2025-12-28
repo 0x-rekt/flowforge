@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -25,20 +26,17 @@ export function CreateBoardDialog() {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/whiteboard/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title }),
+      const res = await axios.post("/api/whiteboard/create", {
+        title: title.trim(),
       });
-
-      if (!res.ok) throw new Error("Failed to create board");
-
-      const data = await res.json();
+      if (res.status !== 201) throw new Error("Failed to create board");
       toast.success("Board created successfully");
       setOpen(false);
       setTitle("");
       router.refresh();
     } catch (error) {
+      console.log(error);
+
       toast.error("Could not create board. Please try again.");
     } finally {
       setLoading(false);
@@ -48,7 +46,6 @@ export function CreateBoardDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {/* Using CustomBtn for the Trigger */}
         <div className="w-full md:w-auto">
           <CustomBtn
             text="New Whiteboard"
@@ -79,7 +76,6 @@ export function CreateBoardDialog() {
           />
         </div>
         <div className="flex justify-end">
-          {/* Using CustomBtn for the Submit Action */}
           <CustomBtn
             text={loading ? "Creating..." : "Confirm & Create"}
             onClick={handleCreate}

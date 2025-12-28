@@ -76,6 +76,7 @@ model WhiteBoard {
   id        String             @id @default(cuid())
   title     String
   ownerId   String
+  contents  Json               @default("[]")
   owner     User               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   members   WhiteBoardMember[]
   createdAt DateTime           @default(now())
