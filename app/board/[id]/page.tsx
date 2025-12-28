@@ -22,7 +22,21 @@ const BoardPage = async ({ params }: { params: { id: string } }) => {
       userId: session.user.id,
     },
     include: {
-      whiteBoard: true,
+      whiteBoard: {
+        include: {
+          members: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
 
@@ -37,9 +51,15 @@ const BoardPage = async ({ params }: { params: { id: string } }) => {
     ? (raw as unknown as OrderedExcalidrawElement[])
     : [];
 
+  const members = isUserMember.whiteBoard.members.map((member) => member.user);
+
   return (
     <div className="min-h-screen">
-      <BoardCanvas whiteBoardId={id} whiteBoardInitialData={initialData} />
+      <BoardCanvas
+        whiteBoardId={id}
+        whiteBoardInitialData={initialData}
+        members={members}
+      />
     </div>
   );
 };
