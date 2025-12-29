@@ -103,7 +103,7 @@ export default function BoardCanvas({
             </div>
             <Button
               onClick={handleSave}
-              className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-md m-2"
+              className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-md"
               disabled={loading}
             >
               {loading ? <Loader className="animate-spin" /> : "Save"}
@@ -113,7 +113,7 @@ export default function BoardCanvas({
                 <DialogHeader>
                   <DialogTitle>Add member</DialogTitle>
                   <DialogDescription>
-                    Invite a user to collaborate on this whiteboard.
+                    Add a user to collaborate on this whiteboard.
                   </DialogDescription>
                 </DialogHeader>
 
@@ -135,12 +135,14 @@ export default function BoardCanvas({
                   <Button
                     variant="secondary"
                     onClick={() => setIsDialogOpen(false)}
+                    className="cursor-pointer"
                   >
                     Cancel
                   </Button>
 
                   <Button
                     disabled={!inviteEmail || inviteLoading}
+                    className="cursor-pointer bg-white/10 hover:bg-white/20 text-white"
                     onClick={() => {
                       setInviteLoading(true);
                       handleAddMember(inviteEmail)
@@ -158,9 +160,9 @@ export default function BoardCanvas({
                     }}
                   >
                     {inviteLoading ? (
-                      <Loader className="h-4 w-4 animate-spin" />
+                      <Loader className="h-4 w-4 animate-spin cursor-progress" />
                     ) : (
-                      "Send Invite"
+                      "Add Member"
                     )}
                   </Button>
                 </DialogFooter>
@@ -168,7 +170,7 @@ export default function BoardCanvas({
             </Dialog>
 
             <Button
-              className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-md m-2"
+              className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-md"
               onClick={() => setIsDialogOpen(true)}
             >
               Add Member
