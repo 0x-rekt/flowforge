@@ -1,8 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import "@excalidraw/excalidraw/index.css";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { OrderedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -17,13 +16,17 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "./ui/dialog";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 
+import { LiveCollaborationTrigger } from "@excalidraw/excalidraw";
+
 const Excalidraw = dynamic(
-  async () => (await import("@excalidraw/excalidraw")).Excalidraw,
+  async () => {
+    await import("@excalidraw/excalidraw/index.css");
+    return (await import("@excalidraw/excalidraw")).Excalidraw;
+  },
   { ssr: false }
 );
 
@@ -42,22 +45,44 @@ export default function BoardCanvas({
   whiteBoardInitialData?: readonly OrderedExcalidrawElement[];
   members: BoardMember[];
 }) {
-  const boardStateRef = useRef<readonly OrderedExcalidrawElement[]>([]);
+  const [excalidrawAPI, setExcalidrawAPI] = useState<any>(null);
+  const [isCollaborating, setIsCollaborating] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteLoading, setInviteLoading] = useState(false);
 
+  /** 🔹 Sync collaborators exactly like Excalidraw example */
+  useEffect(() => {
+    if (!excalidrawAPI) return;
+
+    if (isCollaborating) {
+      const collaborators = new Map();
+
+      members.forEach((member) => {
+        collaborators.set(member.id, {
+          username: member.name,
+          avatarUrl: member.image ?? undefined,
+        });
+      });
+
+      excalidrawAPI.updateScene({ collaborators });
+    } else {
+      excalidrawAPI.updateScene({
+        collaborators: new Map(),
+      });
+    }
+  }, [isCollaborating, members, excalidrawAPI]);
+
   const handleSave = async () => {
     setLoading(true);
     try {
       await axios.post("/api/whiteboard/save", {
-        elements: boardStateRef.current,
         whiteBoardId,
       });
       toast.success("Whiteboard saved!");
-    } catch (error) {
-      console.error(error);
+    } catch {
       toast.error("Failed to save whiteboard.");
     } finally {
       setLoading(false);
@@ -65,116 +90,80 @@ export default function BoardCanvas({
   };
 
   const handleAddMember = async (email: string) => {
-    try {
-      const response = await axios.post("/api/whiteboard/add-member", {
-        boardId: whiteBoardId,
-        email,
-      });
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to add member.");
-    }
+    await axios.post("/api/whiteboard/add-member", {
+      boardId: whiteBoardId,
+      email,
+    });
   };
 
   return (
     <div className="h-screen w-full">
       <Excalidraw
         theme="dark"
-        onChange={(elements) => {
-          boardStateRef.current = elements;
-        }}
+        excalidrawAPI={(api) => setExcalidrawAPI(api)}
         initialData={{
           elements: whiteBoardInitialData ?? [],
         }}
         renderTopRightUI={() => (
-          <div className="flex items-center gap-8">
-            <div className="*:data-[slot=avatar]:ring-background flex -space-x-2 *:data-[slot=avatar]:ring-2">
+          <div className="flex items-center gap-6">
+            {/* Avatars */}
+            <div className="flex -space-x-2">
               {members.map((member) => (
                 <Avatar key={member.id}>
-                  <AvatarImage
-                    src={member.image ?? undefined}
-                    alt={member.name ?? "User avatar"}
-                  />
+                  <AvatarImage src={member.image ?? undefined} />
                   <AvatarFallback>
-                    {member.name?.charAt(0).toUpperCase() || "U"}{" "}
+                    {member.name?.[0]?.toUpperCase() ?? "U"}
                   </AvatarFallback>
                 </Avatar>
               ))}
             </div>
-            <Button
-              onClick={handleSave}
-              className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-md"
-              disabled={loading}
-            >
+
+            {/* Save */}
+            <Button onClick={handleSave} disabled={loading}>
               {loading ? <Loader className="animate-spin" /> : "Save"}
             </Button>
+
+            {/* Live collaboration toggle */}
+            <LiveCollaborationTrigger
+              isCollaborating={isCollaborating}
+              onSelect={() => setIsCollaborating(true)}
+            />
+
+            {/* Add member */}
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogContent className="sm:max-w-md bg-[#0c0c0c] border-white/10 text-white">
+              <DialogContent className="bg-[#0c0c0c] text-white">
                 <DialogHeader>
                   <DialogTitle>Add member</DialogTitle>
                   <DialogDescription>
-                    Add a user to collaborate on this whiteboard.
+                    Invite someone to collaborate.
                   </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-4 py-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email address</Label>
-                    <Input
-                      id="email"
-                      placeholder="user@example.com"
-                      value={inviteEmail}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setInviteEmail(e.target.value)
-                      }
-                    />
-                  </div>
-                </div>
+                <Label>Email</Label>
+                <Input
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                />
 
                 <DialogFooter>
                   <Button
-                    variant="secondary"
-                    onClick={() => setIsDialogOpen(false)}
-                    className="cursor-pointer"
-                  >
-                    Cancel
-                  </Button>
-
-                  <Button
-                    disabled={!inviteEmail || inviteLoading}
-                    className="cursor-pointer bg-white/10 hover:bg-white/20 text-white"
-                    onClick={() => {
+                    disabled={inviteLoading}
+                    onClick={async () => {
                       setInviteLoading(true);
-                      handleAddMember(inviteEmail)
-                        .then(() => {
-                          toast.success("Memeber added successfully.");
-                          setIsDialogOpen(false);
-                          setInviteEmail("");
-                        })
-                        .catch(() => {
-                          toast.error("Failed to send invite.");
-                        })
-                        .finally(() => {
-                          setInviteLoading(false);
-                        });
+                      await handleAddMember(inviteEmail);
+                      toast.success("Member added");
+                      setInviteEmail("");
+                      setIsDialogOpen(false);
+                      setInviteLoading(false);
                     }}
                   >
-                    {inviteLoading ? (
-                      <Loader className="h-4 w-4 animate-spin cursor-progress" />
-                    ) : (
-                      "Add Member"
-                    )}
+                    Add
                   </Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
 
-            <Button
-              className="bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-md"
-              onClick={() => setIsDialogOpen(true)}
-            >
-              Add Member
-            </Button>
+            <Button onClick={() => setIsDialogOpen(true)}>Add Member</Button>
           </div>
         )}
       />

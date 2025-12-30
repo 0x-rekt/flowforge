@@ -4,7 +4,6 @@ import prisma from "@/lib/prisma";
 import { OrderedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import toast from "react-hot-toast";
 
 const BoardPage = async ({ params }: { params: { id: string } }) => {
   const { id } = await params;
@@ -41,7 +40,6 @@ const BoardPage = async ({ params }: { params: { id: string } }) => {
   });
 
   if (!isUserMember) {
-    toast.error("You do not have access to this board.");
     redirect("/dashboard");
   }
 
