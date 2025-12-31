@@ -50,16 +50,57 @@ ${userPrompt}
 
   if (mode === "design-to-code") {
     return `
-You are a frontend engineer.
-Convert this design into React + Tailwind code.
+You are an expert system that converts visual diagrams into code.
 
-Design JSON:
-${JSON.stringify(selectedShapes.length ? selectedShapes : shapes)}
+Your job has TWO STEPS.
 
-Rules:
-- Return only valid code,
-- No explanation text,
-- Functional React components with Tailwind classes
+────────────────────────
+STEP 1 — CLASSIFY THE DIAGRAM
+────────────────────────
+
+Analyze the diagram and decide ONE of the following intents:
+
+- "frontend" → UI layout, wireframe, component skeleton
+- "backend" → database schema, entities, relations
+- "unknown" → cannot determine clearly
+
+Classification rules:
+- Presence of "(PK)", "(FK)", arrows between tables → backend
+- Presence of buttons, cards, navbars, inputs → frontend
+- If both appear, choose the dominant one
+
+DO NOT output the classification yet.
+Use it internally.
+
+────────────────────────
+STEP 2 — GENERATE CODE
+────────────────────────
+
+If intent = "backend":
+- Infer database entities
+- Detect primary & foreign keys
+- Generate Prisma schema (preferred)
+- NO frontend code
+- NO JSX
+- NO SVG
+- Output CODE ONLY
+
+If intent = "frontend":
+- Interpret diagram as UI skeleton
+- Generate React + Tailwind code
+- Functional components
+- NO backend logic
+- Output CODE ONLY
+
+If intent = "unknown":
+- Generate NOTHING
+- Return an empty string
+
+User instruction:
+"${userPrompt}"
+
+Diagram JSON:
+${JSON.stringify(selectedShapes.length ? selectedShapes : shapes, null, 2)}
 `;
   }
 

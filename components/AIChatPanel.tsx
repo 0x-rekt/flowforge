@@ -26,6 +26,7 @@ export function AIChatPanel() {
       const res = await axios.post("/api/ai", {
         prompt: input,
         mode,
+        context: mode === "design-to-code" ? editor.getCurrentPageShapes() : [],
       });
 
       if (res.data.error) {
@@ -72,7 +73,7 @@ export function AIChatPanel() {
   };
 
   return (
-    <div className="absolute right-6 top-24 w-80 z-[100] bg-zinc-900/90 border border-white/10 rounded-2xl p-4">
+    <div className="absolute right-6 top-24 w-80 z-100 bg-zinc-900/90 border border-white/10 rounded-2xl p-4">
       <textarea
         value={input}
         onChange={(e) => setInput(e.target.value)}
