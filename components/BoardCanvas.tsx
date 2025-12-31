@@ -17,6 +17,7 @@ import { Tldraw, useEditor } from "tldraw";
 import { useSyncDemo } from "@tldraw/sync";
 import "tldraw/tldraw.css";
 import { useRouter } from "next/navigation";
+import { AIChatPanel } from "./AIChatPanel";
 
 interface BoardMember {
   id: string;
@@ -84,6 +85,7 @@ export default function BoardCanvas({
           setIsAddMemberOpen={setIsAddMemberOpen}
           initialData={whiteBoardInitialData}
         />
+        <AIChatPanel />
       </Tldraw>
 
       {/* Themed Add Member Dialog */}
@@ -148,6 +150,8 @@ function TldrawUI({
     editor.user.updateUserPreferences({ colorScheme: "dark" });
 
     if (initialData && initialData.length > 0) {
+      console.log(initialData);
+
       try {
         editor.createShapes(initialData);
       } catch (error) {
@@ -160,6 +164,8 @@ function TldrawUI({
     setLoading(true);
     try {
       const shapes = Array.from(editor.getCurrentPageShapes().values());
+      console.log(shapes);
+
       await axios.post("/api/whiteboard/save", {
         whiteBoardId,
         elements: shapes,
@@ -197,7 +203,6 @@ function TldrawUI({
                   {getInitials(member.name)}
                 </AvatarFallback>
               </Avatar>
-              {/* Custom Tooltip */}
               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 px-2 py-1 bg-zinc-950 text-white text-[10px] rounded border border-white/10 opacity-0 group-hover/avatar:opacity-100 transition-opacity whitespace-nowrap pointer-events-none uppercase tracking-tighter z-110">
                 {member.name}
               </div>
