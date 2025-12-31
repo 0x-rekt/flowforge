@@ -22,7 +22,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Verify user has access to this whiteboard
     const member = await prisma.whiteBoardMember.findFirst({
       where: {
         whiteBoardId,
@@ -50,7 +49,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Save the elements to the database
     await prisma.whiteBoard.update({
       where: {
         id: whiteBoardId,

@@ -8,7 +8,6 @@
     "start": "next start"
   },
   "dependencies": {
-    "@excalidraw/excalidraw": "^0.18.0",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "@radix-ui/react-avatar": "^1.1.11",
@@ -29,10 +28,7 @@
     "react-dom": "19.2.3",
     "react-hot-toast": "^2.6.0",
     "tailwind-merge": "^3.4.0",
-    "tldraw": "^4.2.1",
-    "ws": "^8.18.3",
-    "y-websocket": "^3.0.0",
-    "yjs": "^13.6.28"
+    "tldraw": "^4.2.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -40,7 +36,6 @@
     "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@types/ws": "^8.18.1",
     "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.0",

@@ -13,7 +13,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
-  if (pathname === "/sign-in" || pathname.startsWith(`/board/`)) return null;
+  if (pathname === "/sign-in") return null;
 
   const navItems = [
     { name: "Home", href: "/" },
