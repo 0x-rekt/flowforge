@@ -1,7 +1,6 @@
 import BoardCanvas from "@/components/BoardCanvas";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { OrderedExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -45,9 +44,8 @@ const BoardPage = async ({ params }: { params: { id: string } }) => {
 
   const raw = isUserMember.whiteBoard.contents;
 
-  const initialData: readonly OrderedExcalidrawElement[] = Array.isArray(raw)
-    ? (raw as unknown as OrderedExcalidrawElement[])
-    : [];
+  // Parse the initial data
+  const initialData = Array.isArray(raw) ? raw : [];
 
   const members = isUserMember.whiteBoard.members.map((member) => member.user);
 
@@ -57,6 +55,12 @@ const BoardPage = async ({ params }: { params: { id: string } }) => {
         whiteBoardId={id}
         whiteBoardInitialData={initialData}
         members={members}
+        user={{
+          id: session.user.id,
+          name: session.user.name || "Unnamed User",
+          email: session.user.email || "",
+          image: session.user.image || null,
+        }}
       />
     </div>
   );
