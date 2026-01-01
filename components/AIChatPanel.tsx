@@ -15,6 +15,7 @@ import {
 import toast from "react-hot-toast";
 import axios from "axios";
 import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 export function AIChatPanel() {
   const editor = useEditor();
@@ -47,18 +48,6 @@ export function AIChatPanel() {
   function safeRichText(richText?: any) {
     const text = richText?.content?.[0]?.content?.[0]?.text?.trim() || " ";
 
-    return {
-      type: "doc",
-      content: [
-        {
-          type: "paragraph",
-          content: [{ type: "text", text }],
-        },
-      ],
-    };
-  }
-
-  function toRichText(text: string) {
     return {
       type: "doc",
       content: [
@@ -188,7 +177,7 @@ export function AIChatPanel() {
           <div className="flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-purple-400" />
             <span className="text-xs font-bold text-white tracking-tight uppercase">
-              AI Architect
+              FlowForge AI
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -215,7 +204,8 @@ export function AIChatPanel() {
             />
 
             <div className="flex gap-2">
-              <CustomBtn
+              <Button
+                disabled={loading}
                 onClick={() => handleAIAction("text-to-design")}
                 className="bg-purple-600 border-none flex-1 h-10 px-2"
               >
@@ -225,9 +215,10 @@ export function AIChatPanel() {
                   <Sparkles className="w-4 h-4" />
                 )}
                 <span className="text-[10px] sm:text-xs">Design</span>
-              </CustomBtn>
+              </Button>
 
-              <CustomBtn
+              <Button
+                disabled={loading}
                 onClick={() => handleAIAction("design-to-code")}
                 className="bg-zinc-100 text-black border-none flex-1 h-10 px-2 hover:bg-white"
               >
@@ -237,7 +228,7 @@ export function AIChatPanel() {
                   <Code className="w-4 h-4" />
                 )}
                 <span className="text-[10px] sm:text-xs">To Code</span>
-              </CustomBtn>
+              </Button>
             </div>
 
             {generatedCode && (
@@ -246,7 +237,7 @@ export function AIChatPanel() {
                   <span className="text-[10px] text-zinc-500 font-mono">
                     OUTPUT
                   </span>
-                  <button
+                  <CustomBtn
                     onClick={handleCopy}
                     className="p-1 text-zinc-400 hover:text-white"
                   >
@@ -255,7 +246,7 @@ export function AIChatPanel() {
                     ) : (
                       <Copy size={14} />
                     )}
-                  </button>
+                  </CustomBtn>
                 </div>
                 <div className="overflow-auto p-3">
                   <pre className="text-[10px] text-zinc-300 font-mono whitespace-pre-wrap">

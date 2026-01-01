@@ -40,7 +40,7 @@ STRICT RULES (MANDATORY):
 - IDs MUST start with "shape:"
 - Prefer UPDATE over ADD
 - Preserve layout unless user asks otherwise
-- Fill should be either of these: "none" or "semi" or "solid" or "pattern" or "fill" or "lined-fill"
+- Fill should be either "solid" or "none"
 - No field like "labelColor" is allowed
 
 CURRENT CANVAS:

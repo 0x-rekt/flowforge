@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Loader, Save, UserPlus } from "lucide-react";
+import { Loader, Save, UserPlus, ArrowLeft } from "lucide-react";
 import CustomBtn from "./custom-btn";
 import {
   Dialog,
@@ -41,7 +41,6 @@ export default function BoardCanvas({
   const [memberEmail, setMemberEmail] = useState("");
   const [addingMember, setAddingMember] = useState(false);
   const router = useRouter();
-
   const store = useSyncDemo({
     roomId: whiteBoardId,
     userInfo: {
@@ -88,7 +87,6 @@ export default function BoardCanvas({
         <AIChatPanel />
       </Tldraw>
 
-      {/* Themed Add Member Dialog */}
       <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
         <DialogContent className="bg-[#0a0a0a] border border-white/10 text-white shadow-2xl">
           <DialogHeader>
@@ -145,6 +143,7 @@ function TldrawUI({
   initialData?: any[];
 }) {
   const editor = useEditor();
+  const router = useRouter();
 
   useEffect(() => {
     editor.user.updateUserPreferences({ colorScheme: "dark" });
@@ -186,7 +185,15 @@ function TldrawUI({
   };
 
   return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-100 flex items-center gap-4 bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 px-4 shadow-2xl">
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-100 flex items-center gap-4 bg-zinc-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-2 px-4 shadow-2xl ">
+      <button
+        onClick={() => router.push("/dashboard")}
+        className="h-9 w-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100  hover:bg-white/10 transition-all active:scale-90"
+        title="Back to Dashboard"
+      >
+        <ArrowLeft className="h-4 w-4 text-zinc-300" />
+      </button>
+
       <div className="flex items-center gap-3 border-r border-white/10 pr-4">
         <div className="flex -space-x-3">
           {members.map((member) => (

@@ -3,7 +3,9 @@ import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { AuthFadeIn } from "@/components/auth-fade-in";
 import { CreateBoardDialog } from "@/components/CreateBoardDialog";
-import { FileText, Layout, Clock } from "lucide-react";
+import { FileText, Layout, Clock, Trash2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { BoardCard } from "@/components/BoardCard";
 import Link from "next/link";
 
 const DashboardPage = async () => {
@@ -14,6 +16,18 @@ const DashboardPage = async () => {
   const data = await prisma.whiteBoard.findMany({
     where: {
       members: { some: { userId: session?.user.id } },
+    },
+    include: {
+      members: {
+        include: {
+          user: {
+            select: { id: true, name: true, image: true },
+          },
+        },
+      },
+      owner: {
+        select: { id: true, name: true },
+      },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -47,26 +61,11 @@ const DashboardPage = async () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {data.map((wb) => (
-                <Link
-                  href={`/board/${wb.id}`}
+                <BoardCard
                   key={wb.id}
-                  className="group relative p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 hover:border-white/20 transition-all duration-300"
-                >
-                  <div className="flex items-start justify-between mb-10">
-                    <div className="h-12 w-12 rounded-xl bg-zinc-900 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <FileText className="h-6 w-6 text-zinc-400" />
-                    </div>
-                  </div>
-                  <div className="space-y-3">
-                    <h3 className="text-white font-semibold text-xl truncate">
-                      {wb.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-zinc-500 text-xs uppercase tracking-widest">
-                      <Clock className="h-3.5 w-3.5" />
-                      <span>{wb.createdAt.toDateString()}</span>
-                    </div>
-                  </div>
-                </Link>
+                  board={wb}
+                  isOwner={wb.ownerId === session?.user.id}
+                />
               ))}
             </div>
           )}
