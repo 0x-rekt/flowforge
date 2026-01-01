@@ -1,115 +1,81 @@
 export function buildPrompt(
-  mode: string,
+  mode: "text-to-design" | "design-to-code",
   userPrompt: string,
   shapes: any[],
   selectedShapes: any[]
 ) {
   if (mode === "text-to-design") {
     return `
-You are a UI design assistant that outputs shapes for tldraw canvas.
+You are a tldraw canvas editor AI.
 
-Return **only valid JSON** (an array of shape records).
-Rules:
-- Each shape must include a unique "id".
-- Geo shapes must NOT contain a "text" property in props.
-- For any text, use a separate "text" shape.
-- The valid types are "geo", "text", "arrow".
+You MODIFY an existing canvas.
 
-Example:
-[
-  {
-    "id": "rect1",
-    "type": "geo",
-    "x": 10,
-    "y": 10,
-    "props": { "geo": "rectangle", "w": 200, "h": 100 }
-  },
-  {
-    "id": "txt1",
-    "type": "text",
-    "x": 20,
-    "y": 20,
-    "props": { "text": "Hello world" }
-  },
-  {
-    "id": "arrow1",
-    "type": "arrow",
-    "x": 50,
-    "y": 50,
-    "props": {
-      "start": { "x": 0, "y": 0 },
-      "end": { "x": 100, "y": 50 }
+INPUTS:
+- Current canvas shapes (JSON)
+- User instruction
+
+OUTPUT:
+Return ONLY valid JSON:
+
+{
+  "operations": [
+    {
+      "action": "add" | "update" | "delete",
+      "id"?: "shape:...",
+      "shape"?: { FULL shape object },
+      "patch"?: { PARTIAL shape update }
     }
-  }
-]
+  ]
+}
 
-User instruction:
+STRICT RULES (MANDATORY):
+- NEVER return "props.text"
+- Text shapes MUST use "props.richText"
+- Geo shapes MUST NOT contain richText
+- Every richText paragraph MUST contain at least ONE text node
+- Allowed colors ONLY:
+  black, grey, white, blue, light-blue,
+  violet, light-violet, green, light-green,
+  yellow, orange, red, light-red
+- IDs MUST start with "shape:"
+- Prefer UPDATE over ADD
+- Preserve layout unless user asks otherwise
+- Fill should be either of these: "none" or "semi" or "solid" or "pattern" or "fill" or "lined-fill"
+- No field like "labelColor" is allowed
+
+CURRENT CANVAS:
+${JSON.stringify(shapes, null, 2)}
+
+USER REQUEST:
 ${userPrompt}
 `;
   }
 
   if (mode === "design-to-code") {
     return `
-You are an expert system that converts visual diagrams into code.
+You convert diagrams into code.
 
-Your job has TWO STEPS.
+STEP 1 (internal):
+Classify diagram as frontend OR backend.
 
-────────────────────────
-STEP 1 — CLASSIFY THE DIAGRAM
-────────────────────────
+STEP 2:
+If frontend:
+- Generate React + Tailwind code ONLY
 
-Analyze the diagram and decide ONE of the following intents:
+If backend:
+- Generate Prisma schema ONLY
 
-- "frontend" → UI layout, wireframe, component skeleton
-- "backend" → database schema, entities, relations
-- "unknown" → cannot determine clearly
+NO explanations.
+NO markdown.
+CODE ONLY.
 
-Classification rules:
-- Presence of "(PK)", "(FK)", arrows between tables → backend
-- Presence of buttons, cards, navbars, inputs → frontend
-- If both appear, choose the dominant one
-
-DO NOT output the classification yet.
-Use it internally.
-
-────────────────────────
-STEP 2 — GENERATE CODE
-────────────────────────
-
-If intent = "backend":
-- Infer database entities
-- Detect primary & foreign keys
-- Generate Prisma schema (preferred)
-- NO frontend code
-- NO JSX
-- NO SVG
-- Output CODE ONLY
-
-If intent = "frontend":
-- Interpret diagram as UI skeleton
-- Generate React + Tailwind code
-- Functional components
-- NO backend logic
-- Output CODE ONLY
-
-If intent = "unknown":
-- Generate NOTHING
-- Return an empty string
-
-User instruction:
-"${userPrompt}"
-
-Diagram JSON:
+DIAGRAM:
 ${JSON.stringify(selectedShapes.length ? selectedShapes : shapes, null, 2)}
+
+USER REQUEST:
+${userPrompt}
 `;
   }
 
-  return `
-You are a collaborative design assistant.
-Board context:
-${JSON.stringify(shapes)}
-
-User query:
-${userPrompt}
-`;
+  return "";
 }

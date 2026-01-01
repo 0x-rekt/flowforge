@@ -150,8 +150,6 @@ function TldrawUI({
     editor.user.updateUserPreferences({ colorScheme: "dark" });
 
     if (initialData && initialData.length > 0) {
-      console.log(initialData);
-
       try {
         editor.createShapes(initialData);
       } catch (error) {
@@ -164,7 +162,6 @@ function TldrawUI({
     setLoading(true);
     try {
       const shapes = Array.from(editor.getCurrentPageShapes().values());
-      console.log(shapes);
 
       await axios.post("/api/whiteboard/save", {
         whiteBoardId,

@@ -1,8 +1,11 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
-  const { boardId, email } = await req.json();
+export const POST = async (
+  request: NextRequest,
+  context: { params: Promise<{}> }
+) => {
+  const { boardId, email } = await request.json();
 
   if (!boardId || !email) {
     return NextResponse.json(

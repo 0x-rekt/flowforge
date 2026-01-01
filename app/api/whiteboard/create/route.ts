@@ -2,9 +2,12 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (
+  request: NextRequest,
+  context: { params: Promise<{}> }
+) => {
   const session = await auth.api.getSession({
-    headers: req.headers,
+    headers: request.headers,
   });
 
   if (!session?.user?.id) {
@@ -21,7 +24,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
-  const { title } = await req.json();
+  const { title } = await request.json();
 
   if (!title || typeof title !== "string") {
     return NextResponse.json({ error: "Invalid title" }, { status: 400 });

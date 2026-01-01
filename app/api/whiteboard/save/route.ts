@@ -3,7 +3,10 @@ import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function POST(
+  request: NextRequest,
+  context: { params: Promise<{}> }
+) {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -13,7 +16,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { elements, whiteBoardId } = await req.json();
+    const { elements, whiteBoardId } = await request.json();
 
     if (!whiteBoardId || typeof whiteBoardId !== "string") {
       return NextResponse.json(

@@ -35,8 +35,6 @@ export function CreateBoardDialog() {
       setTitle("");
       router.refresh();
     } catch (error) {
-      console.log(error);
-
       toast.error("Could not create board. Please try again.");
     } finally {
       setLoading(false);
