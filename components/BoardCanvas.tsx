@@ -50,6 +50,8 @@ export default function BoardCanvas({
     },
   });
 
+  console.log(process.env.TLDRAW_LICENSE_KEY)
+
   const handleAddMember = async () => {
     if (!memberEmail.trim()) {
       toast.error("Please enter an email address");
