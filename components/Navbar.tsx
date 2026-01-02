@@ -53,7 +53,7 @@ const Navbar = () => {
             </Link>
           ))}
           <Link
-            href="https://github.com/your-repo-link"
+            href="https://github.com/0x-rekt/flowforge"
             target="_blank"
             className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition-all border-l border-white/10 pl-10"
           >
