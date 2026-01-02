@@ -75,7 +75,7 @@ export default function BoardCanvas({
 
   return (
     <div className="h-full w-full relative group">
-      <Tldraw store={store}>
+      <Tldraw store={store} licenseKey={process.env.TLDRAW_LICENSE_KEY}>
         <TldrawUI
           whiteBoardId={whiteBoardId}
           members={members}
