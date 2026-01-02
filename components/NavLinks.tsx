@@ -13,24 +13,27 @@ export function NavLinks() {
     return <div className="h-10 w-24 animate-pulse bg-white/5 rounded-xl" />;
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-4">
       {!session ? (
-        <Link href="/sign-in">
-          <CustomBtn text="Sign in" className="px-6 py-2" />
+        <Link href="/sign-in" className="w-full md:w-auto">
+          <CustomBtn
+            text="Sign in"
+            className="w-full md:px-6 py-2 bg-white text-black border-none"
+          />
         </Link>
       ) : (
-        <div className="flex items-center gap-4 animate-in fade-in duration-300">
-          <Link href="/dashboard">
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-4 w-full">
+          <Link href="/dashboard" className="w-full md:w-auto">
             <CustomBtn
               text="Dashboard"
-              className="border-none bg-transparent hover:bg-white/5 px-4 py-2"
+              className="w-full md:w-auto border-white/10 bg-white/5 hover:bg-white/10"
             />
           </Link>
 
           <LogoutButton />
 
           {session.user.image && (
-            <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-white/10 shrink-0">
+            <div className="relative h-10 w-10 overflow-hidden rounded-xl border border-white/10 hidden md:block shrink-0">
               <Image
                 src={session.user.image}
                 alt="Profile"
