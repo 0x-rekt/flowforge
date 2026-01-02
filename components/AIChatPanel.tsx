@@ -165,7 +165,7 @@ export function AIChatPanel() {
     <div
       className={cn(
         "fixed z-2000 transition-all duration-300 ease-in-out",
-        "bottom-20 left-4 right-4 w-auto md:right-auto md:left-2 md:top-11 md:bottom-auto md:w-72",
+        "bottom-20 left-4 right-4 w-auto md:left-auto md:right-2 md:bottom-0 md:top-auto md:w-72",
         isMinimized ? "h-14" : "h-auto"
       )}
     >
