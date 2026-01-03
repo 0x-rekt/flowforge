@@ -49,7 +49,7 @@ export default function BoardCanvas({
       color: "#" + (((1 << 24) * Math.random()) | 0).toString(16),
     },
   });
-  
+
   const handleAddMember = async () => {
     if (!memberEmail.trim()) {
       toast.error("Please enter an email address");
@@ -75,7 +75,10 @@ export default function BoardCanvas({
 
   return (
     <div className="h-full w-full relative group">
-      <Tldraw store={store} licenseKey={"tldraw-2026-04-12/WyJLSDJ3bFpJZCIsWyIqIl0sMTYsIjIwMjYtMDQtMTIiXQ.M4EOlO/vmk2dnaq5miIFtDW3JKUG1ZwxfLcz/wzRIJ+9bDNSJy6Dx3uLW17aA5N0xpjh/4Qyom0pBnJOYRZf5A"}>
+      <Tldraw
+        store={store}
+        licenseKey={process.env.NEXT_PUBLIC_TLDRAW_LICENSE_KEY}
+      >
         <TldrawUI
           whiteBoardId={whiteBoardId}
           members={members}

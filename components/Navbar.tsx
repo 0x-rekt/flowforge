@@ -32,22 +32,22 @@ const Navbar = () => {
   return (
     <NavClientWrapper>
       <div
-        className={`max-w-7xl mx-auto flex items-center justify-between px-6 transition-all duration-300 ${
-          scrolled ? "h-16" : "h-20"
+        className={`max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 transition-all ${
+          scrolled ? "h-14" : "h-16"
         }`}
       >
-        <Link href="/" className="flex items-center gap-2.5 z-[51]">
-          <span className="text-xl font-black tracking-tighter text-white uppercase italic">
+        <Link href="/" className="z-[51]">
+          <span className="text-lg font-black tracking-tight text-white italic uppercase">
             FlowForge
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-10">
+        <nav className="hidden lg:flex items-center gap-10">
           {navItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition-all"
+              className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500 hover:text-white"
             >
               {item.name}
             </Link>
@@ -55,20 +55,20 @@ const Navbar = () => {
           <Link
             href="https://github.com/0x-rekt/flowforge"
             target="_blank"
-            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition-all border-l border-white/10 pl-10"
+            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500 hover:text-white border-l border-white/10 pl-10"
           >
             <Github size={14} />
             GitHub
           </Link>
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <NavLinks />
         </div>
 
         <button
-          className="md:hidden z-[51] p-2 text-white/70 hover:text-white transition-colors cursor-pointer"
-          onClick={() => setIsOpen(!isOpen)}
+          className="lg:hidden z-[51] p-2 text-white/70 hover:text-white"
+          onClick={() => setIsOpen((v) => !v)}
         >
           {isOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -77,29 +77,33 @@ const Navbar = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="fixed inset-0 z-50 md:hidden bg-[#0a0a0a] flex flex-col p-8 pt-32"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-x-0 top-14 z-40 lg:hidden bg-[#0a0a0a] border-t border-white/5"
           >
-            <div className="flex flex-col gap-10">
+            <div className="px-6 py-8 flex flex-col gap-6">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className="text-5xl font-black text-white tracking-tighter uppercase italic"
+                  className="text-2xl font-semibold text-white tracking-tight"
                 >
                   {item.name}
                 </Link>
               ))}
+
               <Link
-                href="https://github.com/your-repo-link"
+                href="https://github.com/0x-rekt/flowforge"
                 target="_blank"
-                className="text-5xl font-black text-zinc-600 tracking-tighter uppercase italic flex items-center gap-4"
+                className="flex items-center gap-3 text-lg font-medium text-zinc-400"
               >
-                GitHub <Github size={36} />
+                <Github size={18} /> GitHub
               </Link>
-              <div className="h-px w-full bg-white/5 my-4" />
+
+              <div className="h-px w-full bg-white/10 my-4" />
+
               <NavLinks />
             </div>
           </motion.div>
